@@ -1,0 +1,16 @@
+# Práctica Guiada: Hibernate ORM con JavaFX y PostgreSQL
+**Universidad Americana (UAM)**  
+**Facultad de Ingeniería y Arquitectura**  
+**Carrera:** Ingeniería de Sistemas de Información  
+**Curso:** Programación de Aplicaciones de Escritorio  
+**Integrantes:** Brandon, Andres, Dylan, Andrea  
+**Estructura del Proyecto:** `ni.edu.uam.practicaorm`
+
+---
+
+## 1. Guía de Ejecución y Base de Datos
+
+### 1.1 Creación de la Base de Datos
+En pgAdmin 4 o terminal `psql`, ejecutar la creación inicial:
+```sql
+CREATE DATABASE gestionacademica;
