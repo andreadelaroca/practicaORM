@@ -8,33 +8,43 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public final class HibernateUtil {
-    private static final SessionFactory FACTORY = crear();
+    private static SessionFactory factory;
 
-    private HibernateUtil() {}
+    static {
+        try {
+            Class.forName("org.postgresql.Driver");
 
-    private static SessionFactory crear() {
-        try (InputStream in = HibernateUtil.class.getClassLoader().getResourceAsStream("hibernate.properties")) {
-            if (in == null) {
-                throw new IllegalStateException("No se encontro hibernate.properties en el classpath");
+            try (InputStream in = HibernateUtil.class.getClassLoader().getResourceAsStream("hibernate.properties")) {
+                if (in == null) {
+                    throw new IllegalStateException("No se encontro hibernate.properties en src/main/resources/");
+                }
+                Properties props = new Properties();
+                props.load(in);
+
+                factory = new Configuration()
+                        .addProperties(props)
+                        .addAnnotatedClass(Estudiante.class)
+                        .buildSessionFactory();
             }
-            Properties props = new Properties();
-            props.load(in);
-            return new Configuration()
-                    .addProperties(props)
-                    .addAnnotatedClass(Estudiante.class)
-                    .buildSessionFactory();
-        } catch (Exception e) {
-            throw new ExceptionInInitializerError(e);
+        } catch (Throwable ex) {
+            System.err.println("--- ERROR CRITICO AL INICIALIZAR HIBERNATE ---");
+            ex.printStackTrace();
+            factory = null;
         }
     }
 
+    private HibernateUtil() {}
+
     public static SessionFactory getSessionFactory() {
-        return FACTORY;
+        if (factory == null) {
+            throw new IllegalStateException("SessionFactory no fue inicializado correctamente. Revisa los logs anteriores.");
+        }
+        return factory;
     }
 
     public static void shutdown() {
-        if (FACTORY != null && !FACTORY.isClosed()) {
-            FACTORY.close();
+        if (factory != null && !factory.isClosed()) {
+            factory.close();
         }
     }
 }

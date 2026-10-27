@@ -19,7 +19,10 @@ public class MainApp extends Application {
 
     @Override
     public void stop() {
-        HibernateUtil.shutdown();
+        try {
+            HibernateUtil.shutdown();
+        } catch (Throwable ignored) {
+        }
     }
 
     public static void main(String[] args) {
